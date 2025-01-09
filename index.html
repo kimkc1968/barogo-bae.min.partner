@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kakao Map with GeoJSON</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ffb46c6e52f67ba3c00997e78bc3590a"></script>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+        #map {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        #controls .group {
+            margin-bottom: 20px;
+        }
+        
+        #controls .group h3 {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 5px;
+        }        
+        #controls {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100%;
+            background: #f9f9f9;
+            border-left: 1px solid #ccc;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            padding: 10px;
+            box-sizing: border-box;
+            transition: right 0.3s ease;
+            z-index: 1000;
+        }
+        #controlsHeader {
+            position: sticky;
+            top: 0;
+            background: #f9f9f9;
+            z-index: 10;
+            padding: 10px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        #controls.open {
+            right: 0;
+        }
+        #controls h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        #controls label {
+            display: block;
+            margin-bottom: 10px;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        #controls label.checked {
+            background-color: #007BFF;
+            color: white;
+        }
+        #controls input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        #controls button {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            border-radius: 5px;
+        }
+        #resetButton {
+            background: #ff4d4d;
+            color: white;
+        }
+        #labelToggleButton {
+            background: #007BFF;
+            color: white;
+        }
+        #labelToggleButton.active {
+            background: #28a745;
+        }
+        #searchBox {
+            width: 100%;
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        #searchResultCount {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        #toggleButton {
+            position: fixed;
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 100px;
+            background: #007BFF;
+            color: white;
+            text-align: center;
+            line-height: 100px;
+            cursor: pointer;
+            border-radius: 5px 0 0 5px;
+            z-index: 1001;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<body>
+    <div id="map"></div>
+    <div id="controls">
+        <div id="controlsHeader">
+            <h2>배민커넥트비즈 표준 권역 </h2>
+            <input type="text" id="searchBox" placeholder="검색..." oninput="filterCheckboxes()">
+            <div id="searchResultCount">검색 결과: 0개</div>
+            <button id="resetButton" onclick="resetSelections()">선택 초기화</button>
+            <button id="labelToggleButton" onclick="toggleLabels()">동이름 표시/숨기기</button>
+        </div>
+        <!-- 체크박스 그룹 -->
+        <div class="group">
+            <h3>서울특별시 북부</h3>
+        <label>
+            <input type="checkbox" id="서울특별시 중구_서울중A" onchange="toggleData('서울특별시 중구_서울중A', './서울특별시 중구_서울중A.geojson')">
+            서울특별시 중구_서울중A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 중구_서울중B" onchange="toggleData('서울특별시 중구_서울중B', './서울특별시 중구_서울중B-1.geojson')">
+            서울특별시 중구_서울중B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 용산구_서울용산A" onchange="toggleData('서울특별시 용산구_서울용산A', './서울특별시 용산구_서울용산A-1.geojson')">
+            서울특별시 용산구_서울용산A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 용산구_서울용산B" onchange="toggleData('서울특별시 용산구_서울용산B', './서울특별시 용산구_서울용산B-1.geojson')">
+            서울특별시 용산구_서울용산B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 종로구_서울종로A" onchange="toggleData('서울특별시 종로구_서울종로A', './서울특별시 종로구_서울종로A-1.geojson')">
+            서울특별시 종로구_서울종로A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 종로구_서울종로B" onchange="toggleData('서울특별시 종로구_서울종로B', './서울특별시 종로구_서울종로B-1.geojson')">
+            서울특별시 종로구_서울종로B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 서대문구_서울서대문A" onchange="toggleData('서울특별시 서대문구_서울서대문A', './서울특별시 서대문구_서울서대문A-1.geojson')">
+            서울특별시 서대문구_서울서대문A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 서대문구_서울서대문B" onchange="toggleData('서울특별시 서대문구_서울서대문B', './서울특별시 서대문구_서울서대문B-1.geojson')">
+            서울특별시 서대문구_서울서대문B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 은평구_서울은평A" onchange="toggleData('서울특별시 은평구_서울은평A', './서울특별시 은평구_서울은평A.geojson')">
+            서울특별시 은평구_서울은평A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 은평구_서울은평B" onchange="toggleData('서울특별시 은평구_서울은평B', './서울특별시 은평구_서울은평B.geojson')">
+            서울특별시 은평구_서울은평B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 마포구_서울마포A" onchange="toggleData('서울특별시 마포구_서울마포A', './서울특별시 마포구_서울마포A-1.geojson')">
+            서울특별시 마포구_서울마포A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 마포구_서울마포B" onchange="toggleData('서울특별시 마포구_서울마포B', './서울특별시 마포구_서울마포B-1.geojson')">
+            서울특별시 마포구_서울마포B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 성동구_서울성동A" onchange="toggleData('서울특별시 성동구_서울성동A', './서울특별시 성동구_서울성동A.geojson')">
+            서울특별시 성동구_서울성동A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 성동구_서울성동B" onchange="toggleData('서울특별시 성동구_서울성동B', './서울특별시 성동구_서울성동B-1.geojson')">
+            서울특별시 성동구_서울성동B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 광진구_서울광진A" onchange="toggleData('서울특별시 광진구_서울광진A', './서울특별시 광진구_서울광진A-1.geojson')">
+            서울특별시 광진구_서울광진A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 광진구_서울광진B" onchange="toggleData('서울특별시 광진구_서울광진B', './서울특별시 광진구_서울광진B.geojson')">
+            서울특별시 광진구_서울광진B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 동대문구_서울동대문A" onchange="toggleData('서울특별시 동대문구_서울동대문A', './서울특별시 동대문구_서울동대문A.geojson')">
+            서울특별시 동대문구_서울동대문A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 동대문구_서울동대문B" onchange="toggleData('서울특별시 동대문구_서울동대문B', './서울특별시 동대문구_서울동대문B-1.geojson')">
+            서울특별시 동대문구_서울동대문B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 성북구_서울성북A" onchange="toggleData('서울특별시 성북구_서울성북A', './서울특별시 성북구_서울성북A-1.geojson')">
+            서울특별시 성북구_서울성북A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 성북구_서울성북B" onchange="toggleData('서울특별시 성북구_서울성북B', './서울특별시 성북구_서울성북B-1.geojson')">
+            서울특별시 성북구_서울성북B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 강북구_서울강북A" onchange="toggleData('서울특별시 강북구_서울강북A', './서울특별시 강북구_서울강북A.geojson')">
+            서울특별시 강북구_서울강북A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 강북구_서울강북B" onchange="toggleData('서울특별시 강북구_서울강북B', './서울특별시 강북구_서울강북B.geojson')">
+            서울특별시 강북구_서울강북B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 중랑구_서울중랑A" onchange="toggleData('서울특별시 중랑구_서울중랑A', './서울특별시 중랑구_서울중랑A.geojson')">
+            서울특별시 중랑구_서울중랑A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 중랑구_서울중랑B" onchange="toggleData('서울특별시 중랑구_서울중랑B', './서울특별시 중랑구_서울중랑B.geojson')">
+            서울특별시 중랑구_서울중랑B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 도봉구_서울도봉A" onchange="toggleData('서울특별시 도봉구_서울도봉A', './서울특별시 도봉구_서울도봉A.geojson')">
+            서울특별시 도봉구_서울도봉A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 노원구_서울노원A" onchange="toggleData('서울특별시 노원구_서울노원A', './서울특별시 노원구_서울노원A.geojson')">
+            서울특별시 노원구_서울노원A
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 노원구_서울노원B" onchange="toggleData('서울특별시 노원구_서울노원B', './서울특별시 노원구_서울노원B.geojson')">
+            서울특별시 노원구_서울노원B
+        </label>
+        <label>
+            <input type="checkbox" id="서울특별시 노원구_서울노원도봉A" onchange="toggleData('서울특별시 노원구_서울노원도봉A', './서울특별시 노원구_서울노원도봉A.geojson')">
+            서울특별시 노원구_서울노원도봉A
+        </label>
+
+        <div class="group">
+            <h3>경기도 북부</h3>
+        <label>
+            <input type="checkbox" id="고양시 덕양구_덕양A" onchange="toggleData('고양시 덕양구_덕양A', './고양시 덕양구_덕양A.geojson')">
+            경기도 고양시 덕양구_덕양A
+        </label>
+        <label>
+            <input type="checkbox" id="고양시 덕양구_덕양B" onchange="toggleData('고양시 덕양구_덕양B', './고양시 덕양구_덕양B.geojson')">
+            경기도 고양시 덕양구_덕양B
+        </label>
+        <label>
+            <input type="checkbox" id="고양시 일산동구_일산동A" onchange="toggleData('고양시 일산동구_일산동A', './고양시 일산동구_일산동A.geojson')">
+            경기도 고양시 일산동구_일산동A
+        </label>
+        <label>
+            <input type="checkbox" id="고양시 일산동구_일산동B" onchange="toggleData('고양시 일산동구_일산동B', './고양시 일산동구_일산동B1.geojson')">
+            경기도 고양시 일산동구_일산동B
+        </label>
+        <label>
+            <input type="checkbox" id="고양시 일산서구_일산서A" onchange="toggleData('고양시 일산서구_일산서A', './고양시 일산서구_일산서A.geojson')">
+            경기도 고양시 일산서구_일산서A
+        </label>
+        <label>
+            <input type="checkbox" id="고양시 일산서구_일산서B" onchange="toggleData('고양시 일산서구_일산서B', './고양시 일산서구_일산서B.geojson')">
+            경기도 고양시 일산서구_일산서B
+        </label>
+        <label>
+            <input type="checkbox" id="고양시 일산서구_일산서C" onchange="toggleData('고양시 일산서구_일산서C', './고양시 일산서구_일산서C.geojson')">
+            경기도 고양시 일산서구_일산서C
+        </label>
+        <label>
+            <input type="checkbox" id="구리시_구리A" onchange="toggleData('구리시_구리A', './구리시_구리A.geojson')">
+            경기도 구리시_구리A
+        </label>
+        <label>
+            <input type="checkbox" id="김포시_김포A" onchange="toggleData('김포시_김포A', './김포시_김포A.geojson')">
+            경기도 김포시_김포A
+        </label>
+        <label>
+            <input type="checkbox" id="김포시_김포B" onchange="toggleData('김포시_김포B', './김포시_김포B.geojson')">
+            경기도 김포시_김포B
+        </label>
+        <label>
+            <input type="checkbox" id="남양주시_남양주A" onchange="toggleData('남양주시_남양주A', './남양주시_남양주A.geojson')">
+            경기도 남양주시_남양주A
+        </label>
+        <label>
+            <input type="checkbox" id="남양주시_남양주B" onchange="toggleData('남양주시_남양주B', './남양주시_남양주B1.geojson')">
+            경기도 남양주시_남양주B
+        </label>
+        <label>
+            <input type="checkbox" id="남양주시_남양주C" onchange="toggleData('남양주시_남양주C', './남양주시_남양주C1.geojson')">
+            경기도 남양주시_남양주C
+        </label>
+        <label>
+            <input type="checkbox" id="남양주시_남양주D" onchange="toggleData('남양주시_남양주D', './남양주시_남양주D1.geojson')">
+            경기도 남양주시_남양주D
+        </label>
+        <label>
+            <input type="checkbox" id="양주시_양주A" onchange="toggleData('양주시_양주A', './양주시_양주A.geojson')">
+            경기도 양주시_양주A
+        </label>
+        <label>
+            <input type="checkbox" id="양주시_양주B" onchange="toggleData('양주시_양주B', './양주시_양주B.geojson')">
+            경기도 양주시_양주B
+        </label>
+        <label>
+            <input type="checkbox" id="의정부시_의정부A" onchange="toggleData('의정부시_의정부A', './의정부시_의정부A.geojson')">
+            경기도 의정부시_의정부A
+        </label>
+        <label>
+            <input type="checkbox" id="의정부시_의정부B" onchange="toggleData('의정부시_의정부B', './의정부시_의정부B.geojson')">
+            경기도 의정부시_의정부B
+        </label>
+        <label>
+            <input type="checkbox" id="파주시_파주A" onchange="toggleData('파주시_파주A', './파주시_파주A.geojson')">
+            경기도 파주시_파주A
+        </label>
+        <label>
+            <input type="checkbox" id="파주시_파주B" onchange="toggleData('파주시_파주B', './파주시_파주B.geojson')">
+            경기도 파주시_파주B
+        </label>
+        <label>
+            <input type="checkbox" id="동두천시_동두천A" onchange="toggleData('동두천시_동두천A', './동두천시_동두천A.geojson')">
+            경기도 동두천시_동두천A
+        </label>
+        <label>
+            <input type="checkbox" id="동두천시_동두천B" onchange="toggleData('동두천시_동두천B', './동두천시_동두천B.geojson')">
+            경기도 동두천시_동두천B
+        </label>
+
+        <div class="group">
+            <h3>경기도 남부</h3>
+        <label>
+            <input type="checkbox" id="과천시_경기과천A" onchange="toggleData('과천시_경기과천A', './과천시_경기과천A.geojson')">
+            경기도 과천시_경기과천A
+        </label>
+        <label>
+            <input type="checkbox" id="광명시_경기광명A" onchange="toggleData('광명시_경기광명A', './광명시_경기광명A.geojson')">
+            경기도 광명시_경기광명A
+        </label>
+        <label>
+            <input type="checkbox" id="광명시_경기광명B" onchange="toggleData('광명시_경기광명B', './광명시_경기광명B.geojson')">
+            경기도 광명시_경기광명B
+        </label>
+        <label>
+            <input type="checkbox" id="광주시_경기광주A" onchange="toggleData('광주시_경기광주A', './광주시_경기광주A.geojson')">
+            경기도 광주시_경기광주A
+        </label>
+        <label>
+            <input type="checkbox" id="광주시_경기광주B" onchange="toggleData('광주시_경기광주B', './광주시_경기광주B.geojson')">
+            경기도 광주시_경기광주B
+        </label>
+        <label>
+            <input type="checkbox" id="광주시_경기광주C" onchange="toggleData('광주시_경기광주C', './광주시_경기광주C.geojson')">
+            경기도 광주시_경기광주C
+        </label>
+        <label>
+            <input type="checkbox" id="군포시_경기군포A" onchange="toggleData('군포시_경기군포A', './군포시_경기군포A.geojson')">
+            경기도 군포시_경기군포A
+        </label>
+        <label>
+            <input type="checkbox" id="군포시_경기군포B" onchange="toggleData('군포시_경기군포B', './군포시_경기군포B.geojson')">
+            경기도 군포시_경기군포B
+        </label>
+        <label>
+            <input type="checkbox" id="부천시_경기부천A" onchange="toggleData('부천시_경기부천A', './부천시_경기부천A.geojson')">
+            경기도 부천시_경기부천A
+        </label>
+        <label>
+            <input type="checkbox" id="부천시_경기부천B" onchange="toggleData('부천시_경기부천B', './부천시_경기부천B.geojson')">
+            경기도 부천시_경기부천B
+        </label>
+        <label>
+            <input type="checkbox" id="부천시_경기부천C" onchange="toggleData('부천시_경기부천C', './부천시_경기부천C.geojson')">
+            경기도 부천시_경기부천C
+        </label>
+        <label>
+            <input type="checkbox" id="성남시_성남수정A" onchange="toggleData('성남시_성남수정A', './성남시_성남수정A.geojson')">
+            경기도 성남시 수정구_성남수정A
+        </label>
+        <label>
+            <input type="checkbox" id="성남시_성남중원A" onchange="toggleData('성남시_성남중원A', './성남시_성남중원A-1.geojson')">
+            경기도 성남시 중원구_성남중원A
+        </label>
+        <label>
+            <input type="checkbox" id="성남시_성남분당A" onchange="toggleData('성남시_성남분당A', './성남시_성남분당A-1.geojson')">
+            경기도 성남시 분당구_성남분당A
+        </label>
+        <label>
+            <input type="checkbox" id="성남시_성남분당B" onchange="toggleData('성남시_성남분당B', './성남시_성남분당B.geojson')">
+            경기도 성남시 분당구_성남분당B
+        </label>
+        <label>
+            <input type="checkbox" id="성남시_성남분당C" onchange="toggleData('성남시_성남분당C', './성남시_성남분당C.geojson')">
+            경기도 성남시 분당구_성남분당C
+        </label>
+        <label>
+            <input type="checkbox" id="수원시_수원권선A" onchange="toggleData('수원시_수원권선A', './수원시_수원권선A.geojson')">
+            경기도 수원시 권선구_수원권선A
+        </label>
+        <label>
+            <input type="checkbox" id="수원시_수원영통A" onchange="toggleData('수원시_수원영통A', './수원시_수원영통A.geojson')">
+            경기도 수원시 영통구_수원영통A
+        </label>
+        <label>
+            <input type="checkbox" id="수원시_수원영통B" onchange="toggleData('수원시_수원영통B', './수원시_수원영통B.geojson')">
+            경기도 수원시 영통구_수원영통B
+        </label>
+        <label>
+            <input type="checkbox" id="수원시_수원장안A" onchange="toggleData('수원시_수원장안A', './수원시_수원장안A.geojson')">
+            경기도 수원시 장안구_수원장안A
+        </label>
+        <label>
+            <input type="checkbox" id="수원시_수원팔달A" onchange="toggleData('수원시_수원팔달A', './수원시_수원팔달A.geojson')">
+            경기도 수원시 팔달구_수원팔달A
+        </label>
+        <label>
+            <input type="checkbox" id="시흥시_경기시흥A" onchange="toggleData('시흥시_경기시흥A', './시흥시_경기시흥A.geojson')">
+            경기도 시흥시_경기시흥A
+        </label>
+        <label>
+            <input type="checkbox" id="시흥시_경기시흥B" onchange="toggleData('시흥시_경기시흥B', './시흥시_경기시흥B.geojson')">
+            경기도 시흥시_경기시흥B
+        </label>
+        <label>
+            <input type="checkbox" id="시흥시_경기시흥C" onchange="toggleData('시흥시_경기시흥C', './시흥시_경기시흥C.geojson')">
+            경기도 시흥시_경기시흥C
+        </label>
+        <label>
+            <input type="checkbox" id="안산시_안산단원A" onchange="toggleData('안산시_안산단원A', './안산시_안산단원A.geojson')">
+            경기도 안산시 단원구_안산단원A
+        </label>
+        <label>
+            <input type="checkbox" id="안산시_안산상록A" onchange="toggleData('안산시_안산상록A', './안산시_안산상록A.geojson')">
+            경기도 안산시 상록구_안산상록A
+        </label>
+        <label>
+            <input type="checkbox" id="안성시_경기안성A" onchange="toggleData('안성시_경기안성A', './안성시_경기안성A.geojson')">
+            경기도 안성시_경기안성A
+        </label>
+        <label>
+            <input type="checkbox" id="안성시_경기안성B" onchange="toggleData('안성시_경기안성B', './안성시_경기안성B.geojson')">
+            경기도 안성시_경기안성B
+        </label>
+        <label>
+            <input type="checkbox" id="안양시_안양동안A" onchange="toggleData('안양시_안양동안A', './안양시_안양동안A.geojson')">
+            경기도 안양시 동안구_안양동안A
+        </label>
+        <label>
+            <input type="checkbox" id="안양시_안양만안A" onchange="toggleData('안양시_안양만안A', './안양시_안양만안A.geojson')">
+            경기도 안양시 만안구_안양만안A
+        </label>
+        <label>
+            <input type="checkbox" id="용인시_용인기흥A" onchange="toggleData('용인시_용인기흥A', './용인시_용인기흥A.geojson')">
+            경기도 용인시 기흥구_용인기흥A
+        </label>
+        <label>
+            <input type="checkbox" id="용인시_용인기흥B" onchange="toggleData('용인시_용인기흥B', './용인시_용인기흥B.geojson')">
+            경기도 용인시 기흥구_용인기흥B
+        </label>
+        <label>
+            <input type="checkbox" id="용인시_용인수지A" onchange="toggleData('용인시_용인수지A', './용인시_용인수지A.geojson')">
+            경기도 용인시 수지구_용인수지A
+        </label>
+        <label>
+            <input type="checkbox" id="용인시_용인수지B" onchange="toggleData('용인시_용인수지B', './용인시_용인수지B.geojson')">
+            경기도 용인시 수지구_용인수지B
+        </label>
+        <label>
+            <input type="checkbox" id="용인시_용인처인A" onchange="toggleData('용인시_용인처인A', './용인시_용인처인A.geojson')">
+            경기도 용인시 처인구_용인처인A
+        </label>
+        <label>
+            <input type="checkbox" id="용인시_용인처인B" onchange="toggleData('용인시_용인처인B', './용인시_용인처인B.geojson')">
+            경기도 용인시 처인구_용인처인B
+        </label>
+        <label>
+            <input type="checkbox" id="의왕시_경기의왕A" onchange="toggleData('의왕시_경기의왕A', './의왕시_경기의왕A.geojson')">
+            경기도 의왕시_경기의왕A
+        </label>
+        <label>
+            <input type="checkbox" id="의왕시_경기의왕B" onchange="toggleData('의왕시_경기의왕B', './의왕시_경기의왕B.geojson')">
+            경기도 의왕시_경기의왕B
+        </label>
+        <label>
+            <input type="checkbox" id="평택시_경기평택A" onchange="toggleData('평택시_경기평택A', './평택시_경기평택A.geojson')">
+            경기도 평택시_경기평택A
+        </label>
+        <label>
+            <input type="checkbox" id="평택시_경기평택B" onchange="toggleData('평택시_경기평택B', './평택시_경기평택B.geojson')">
+            경기도 평택시_경기평택B
+        </label>
+        <label>
+            <input type="checkbox" id="평택시_경기평택C" onchange="toggleData('평택시_경기평택C', './평택시_경기평택C.geojson')">
+            경기도 평택시_경기평택C
+        </label>
+        <label>
+            <input type="checkbox" id="평택시_경기평택D" onchange="toggleData('평택시_경기평택D', './평택시_경기평택D.geojson')">
+            경기도 평택시_경기평택D
+        </label>
+        <label>
+            <input type="checkbox" id="하남시_경기하남A" onchange="toggleData('하남시_경기하남A', './하남시_경기하남A.geojson')">
+            경기도 하남시_경기하남A
+        </label>
+        <label>
+            <input type="checkbox" id="화성시_경기화성A" onchange="toggleData('화성시_경기화성A', './화성시_경기화성A.geojson')">
+            경기도 화성시_경기화성A
+        </label>
+        <label>
+            <input type="checkbox" id="화성시_경기화성B" onchange="toggleData('화성시_경기화성B', './화성시_경기화성B.geojson')">
+            경기도 화성시_경기화성B
+        </label>
+        <label>
+            <input type="checkbox" id="화성시_경기화성C" onchange="toggleData('화성시_경기화성C', './화성시_경기화성C.geojson')">
+            경기도 화성시_경기화성C
+        </label>
+
+        <div class="group">
+            <h3>인천광역시</h3>
+        <label>
+            <input type="checkbox" id="인천시_인천계양A" onchange="toggleData('인천시_인천계양A', './인천시_인천계양A.geojson')">
+            인천광역시 계양구_인천계양A
+        </label>
+        <label>
+            <input type="checkbox" id="인천시_인천계양B" onchange="toggleData('인천시_인천계양B', './인천시_인천계양B.geojson')">
+            인천광역시 계양구_인천계양B
+        </label>
+        <label>
+            <input type="checkbox" id="인천시_인천남동A" onchange="toggleData('인천시_인천남동A', './인천시_인천남동A.geojson')">
+            인천광역시 남동구_인천남동A
+        </label>
+        <label>
+            <input type="checkbox" id="인천시_인천남동B" onchange="toggleData('인천시_인천남동B', './인천시_인천남동B.geojson')">
+            인천광역시 남동구_인천남동B
+        </label>
+        <label>
+            <input type="checkbox" id="인천시_인천동A" onchange="toggleData('인천시_인천동A', './인천시_인천동A.geojson')">
+            인천광역시 동구_인천동A
+        </label>
+        <label>
+            <input type="checkbox" id="인천시_인천미추홀A" onchange="toggleData('인천시_인천미추홀A', './인천시_인천미추홀A.geojson')">
+            인천광역시 미추홀구_인천미추홀A
+        </label>
+        <label>
+            <input type="checkbox" id="인천시_인천부평A" onchange="toggleData('인천시_인천부평A', './인천시_인천부평A.geojson')">
+            인천광역시 부평구_인천부평A
+        </label>
+        <label>
+            <input type="checkbox" id="인천시_인천서A" onchange="toggleData('인천시_인천서A', './인천시_인천서A.geojson')">
+            인천광역시 서구_인천서A
+        </label>
+        <label>
+            <input type="checkbox" id="인천시_인천서B" onchange="toggleData('인천시_인천서B', './인천시_인천서B.geojson')">
+            인천광역시 서구_인천서B
+        </label>
+        <label>
+            <input type="checkbox" id="인천시_인천연수A" onchange="toggleData('인천시_인천연수A', './인천시_인천연수A.geojson')">
+            인천광역시 연수구_인천연수A
+        </label>
+        <label>
+            <input type="checkbox" id="인천시_인천연수B" onchange="toggleData('인천시_인천연수B', './인천시_인천연수B.geojson')">
+            인천광역시 연수구_인천연수B
+        </label>
+        <label>
+            <input type="checkbox" id="인천시_인천중A" onchange="toggleData('인천시_인천중A', './인천시_인천중A.geojson')">
+            인천광역시 중구_인천중A
+        </label>
+        <label>
+            <input type="checkbox" id="인천시_인천중B" onchange="toggleData('인천시_인천중B', './인천시_인천중B.geojson')">
+            인천광역시 중구_인천중B
+        </label>
+
+        <div class="group">
+            <h3>세종특별자치시</h3>
+        <label>
+            <input type="checkbox" id="세종특별자치시_세종A권역" onchange="toggleData('세종특별자치시_세종A권역', './세종특별자치시_세종A권역.geojson')">
+            세종특별자치시_세종A권역
+        </label>
+        <label>
+            <input type="checkbox" id="세종특별자치시_세종B권역" onchange="toggleData('세종특별자치시_세종B권역', './세종특별자치시_세종B권역.geojson')">
+            세종특별자치시_세종B권역
+        </label>
+        <label>
+            <input type="checkbox" id="세종특별자치시_세종C권역" onchange="toggleData('세종특별자치시_세종C권역', './세종특별자치시_세종C권역.geojson')">
+            세종특별자치시_세종C권역
+        </label>
+
+
+    </div>
+    <div id="toggleButton">메뉴</div>
+    <script>
+        var map = new kakao.maps.Map(document.getElementById('map'), {
+            center: new kakao.maps.LatLng(37.5665, 126.9780), // 서울 좌표
+            level: 8
+        });
+
+        var polygons = {}; // 각 데이터의 다각형 객체 및 라벨 저장 객체
+        var labelsVisible = true; // 라벨 표시 상태
+
+        function toggleData(id, file) {
+            var checkbox = document.getElementById(id);
+            var label = checkbox.parentElement;
+        
+            if (checkbox.checked) {
+                label.classList.add('checked');
+                fetch(file)
+                    .then(response => response.json())
+                    .then(data => {
+                        var features = data.features;
+                        var polygonArray = [];
+                        var bounds = new kakao.maps.LatLngBounds(); // 지도 이동용 경계 설정
+        
+                        features.forEach(feature => {
+                            var coordinates = feature.geometry.coordinates;
+                            var paths = [];
+        
+                            if (feature.geometry.type === "Polygon") {
+                                paths.push(coordinates[0].map(coord => new kakao.maps.LatLng(coord[1], coord[0])));
+                            } else if (feature.geometry.type === "MultiPolygon") {
+                                coordinates.forEach(polygon => {
+                                    paths.push(polygon[0].map(coord => new kakao.maps.LatLng(coord[1], coord[0])));
+                                });
+                            }
+        
+                            paths.forEach(path => {
+                                var polygon = new kakao.maps.Polygon({
+                                    map: map,
+                                    path: path,
+                                    strokeWeight: 2,
+                                    strokeColor: '#FF0000',
+                                    strokeOpacity: 0.8,
+                                    fillColor: '#FFAAAA',
+                                    fillOpacity: 0.7
+                                });
+        
+                                // 폴리곤 경계 추가 (지도를 이동하기 위해)
+                                path.forEach(coord => bounds.extend(coord));
+        
+                                var labelName = feature.properties.edm_kor_nm || feature.properties.EMD_KOR_NM || "알 수 없음";
+                                var center = getPolygonCenter(path);
+                                var overlay = new kakao.maps.CustomOverlay({
+                                    map: labelsVisible ? map : null,
+                                    position: center,
+                                    content: `
+                                        <div style="font-size: 12px; font-weight: bold; color: black; 
+                                            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">
+                                            ${labelName}
+                                        </div>`,
+                                    yAnchor: 0
+                                });
+        
+                                kakao.maps.event.addListener(polygon, 'mouseover', function() {
+                                    polygon.setOptions({ fillColor: '#FF5555' });
+                                    overlay.setContent(`
+                                        <div style="font-size: 12px; font-weight: bold; color: red; 
+                                            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">
+                                            ${labelName}
+                                        </div>`);
+                                });
+        
+                                kakao.maps.event.addListener(polygon, 'mouseout', function() {
+                                    polygon.setOptions({ fillColor: '#FFAAAA' });
+                                    overlay.setContent(`
+                                        <div style="font-size: 12px; font-weight: bold; color: black; 
+                                            text-shadow: -1px -1px 0 #fff, 1px -1px 0 #fff, -1px 1px 0 #fff, 1px 1px 0 #fff;">
+                                            ${labelName}
+                                        </div>`);
+                                });
+        
+                                polygonArray.push({ polygon, overlay });
+                            });
+                        });
+        
+                        polygons[id] = polygonArray;
+        
+                        // 선택된 폴리곤으로 지도 이동
+                        map.setBounds(bounds); // 폴리곤 영역으로 이동
+                    })
+                    .catch(error => console.error('Error loading GeoJSON:', error));
+            } else {
+                label.classList.remove('checked');
+                if (polygons[id]) {
+                    polygons[id].forEach(({ polygon, overlay }) => {
+                        polygon.setMap(null);
+                        overlay.setMap(null);
+                    });
+                    delete polygons[id];
+                }
+            }
+        }
+
+        function toggleLabels() {
+            labelsVisible = !labelsVisible;
+            Object.values(polygons).forEach(polygonArray => {
+                polygonArray.forEach(({ overlay }) => {
+                    overlay.setMap(labelsVisible ? map : null);
+                });
+            });
+
+            var button = document.getElementById('labelToggleButton');
+            if (labelsVisible) {
+                button.classList.add('active');
+                button.textContent = "동이름 숨기기";
+            } else {
+                button.classList.remove('active');
+                button.textContent = "동이름 표시";
+            }
+        }
+
+        function getPolygonCenter(path) {
+            var sumLat = 0, sumLng = 0, len = path.length;
+            path.forEach(coord => {
+                sumLat += coord.getLat();
+                sumLng += coord.getLng();
+            });
+            return new kakao.maps.LatLng(sumLat / len, sumLng / len);
+        }
+
+        function resetSelections() {
+            var checkboxes = document.querySelectorAll('#controls input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    checkbox.checked = false;
+                    toggleData(checkbox.id, '');
+                }
+            });
+        }
+
+        function filterCheckboxes() {
+            var query = document.getElementById('searchBox').value.toLowerCase();
+            var labels = document.querySelectorAll('#controls label');
+            var count = 0;
+            labels.forEach(label => {
+                var text = label.innerText.toLowerCase();
+                if (text.includes(query)) {
+                    label.style.display = 'block';
+                    count++;
+                } else {
+                    label.style.display = 'none';
+                }
+            });
+            document.getElementById('searchResultCount').textContent = `검색 결과: ${count}개`;
+        }
+        
+
+        document.getElementById('toggleButton').addEventListener('click', function() {
+            var controls = document.getElementById('controls');
+            controls.classList.toggle('open');
+        });
+    </script>
+</body>
+</html>
