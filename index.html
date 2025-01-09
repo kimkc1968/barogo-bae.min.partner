@@ -110,6 +110,35 @@
             color: #555;
             margin-bottom: 10px;
         }
+        #announcement {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #ffc107;
+            color: #333;
+            padding: 10px 20px;
+            box-sizing: border-box;
+            z-index: 1001;
+            font-size: 16px;
+            font-weight: bold;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        #announcement .close-btn {
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #announcement .close-btn:hover {
+            background: #555;
+        }
         #toggleButton {
             position: fixed;
             top: 50%;
@@ -130,6 +159,13 @@
 </head>
 <body>
 <body>
+    <div id="announcement">
+        <div>
+            📢 주의. 바로고 내부 직원 용도입니다. 반드시 직원만 사용 바랍니다. / Last Update. 25.01.09(목)
+        </div>
+        <button class="close-btn" onclick="closeAnnouncement()">닫기</button>
+    </div>
+
     <div id="map"></div>
     <div id="controls">
         <div id="controlsHeader">
@@ -759,7 +795,12 @@
             });
             document.getElementById('searchResultCount').textContent = `검색 결과: ${count}개`;
         }
-        
+
+        // 공지사항 닫기 버튼 기능
+        function closeAnnouncement() {
+            const announcement = document.getElementById('announcement');
+            announcement.style.display = 'none';
+        }
 
         document.getElementById('toggleButton').addEventListener('click', function() {
             var controls = document.getElementById('controls');
