@@ -170,7 +170,7 @@
 <body>
     <div id="announcement">
         <div>
-            📢 업데이트 사항_주요 광역시 및 지방 추가_Update. 25.03.11(화) / 문의사항 : 김기찬 팀장
+            📢 업데이트 사항_신규지방 지역 추가_Update. 25.03.27(목) / 문의사항 : 김기찬 팀장
         </div>
         <button class="close-btn" onclick="closeAnnouncement()">닫기</button>
     </div>
@@ -185,6 +185,33 @@
             <button id="labelToggleButton" onclick="toggleLabels()">동이름 표시/숨기기</button>
         </div>
         <!-- 체크박스 그룹 -->
+        <div class="group">
+            <h3>강원도</h3>
+        <label>
+            <input type="checkbox" id="강원도_강원춘천A" onchange="toggleData('강원도_강원춘천A', './강원도_강원춘천A.geojson')">
+            강원도_강원춘천A
+        </label>
+        <label>
+            <input type="checkbox" id="강원도_강원원주A" onchange="toggleData('강원도_강원원주A', './강원도_강원원주A.geojson')">
+            강원도_강원원주A
+        </label>
+        <label>
+            <input type="checkbox" id="강원도_강원원주B" onchange="toggleData('강원도_강원원주B', './강원도_강원원주B.geojson')">
+            강원도_강원원주B
+        </label>
+        <label>
+            <input type="checkbox" id="강원도_강원속초A" onchange="toggleData('강원도_강원속초A', './강원도_강원속초A.geojson')">
+            강원도_강원속초A
+        </label>
+        <label>
+            <input type="checkbox" id="강원도_강원강릉A" onchange="toggleData('강원도_강원강릉A', './강원도_강원강릉A.geojson')">
+            강원도_강원강릉A
+        </label>
+        <label>
+            <input type="checkbox" id="강원도_강원동해A" onchange="toggleData('강원도_강원동해A', './강원도_강원동해A.geojson')">
+            강원도_강원동해A
+        </label>
+
         <div class="group">
             <h3>서울특별시 북부</h3>
         <label>
@@ -711,6 +738,10 @@
             <input type="checkbox" id="화성시_경기화성C" onchange="toggleData('화성시_경기화성C', './화성시_경기화성C.geojson')">
             경기도 화성시_경기화성C
         </label>
+        <label>
+            <input type="checkbox" id="경기도 이천시_경기이천A" onchange="toggleData('경기도 이천시_경기이천A', './경기도 이천시_경기이천A.geojson')">
+            경기도 이천시_경기이천A
+        </label>
 
         <div class="group">
             <h3>세종특별자치시</h3>
@@ -749,6 +780,38 @@
             <input type="checkbox" id="충청남도_충남천안서북A" onchange="toggleData('충청남도_충남천안서북A', './충청남도_충남천안서북A.geojson')">
             충청남도_충남천안서북A
         </label>
+        <label>
+            <input type="checkbox" id="충청남도_충남당진A" onchange="toggleData('충청남도_충남당진A', './충청남도_충남당진A.geojson')">
+            충청남도_충남당진A
+        </label>
+        <label>
+            <input type="checkbox" id="충청남도_충남당진B" onchange="toggleData('충청남도_충남당진B', './충청남도_충남당진B.geojson')">
+            충청남도_충남당진B
+        </label>
+        <label>
+            <input type="checkbox" id="충청남도_충남서산A" onchange="toggleData('충청남도_충남서산A', './충청남도_충남서산A.geojson')">
+            충청남도_충남서산A
+        </label>
+        <label>
+            <input type="checkbox" id="충청남도_충남서산B" onchange="toggleData('충청남도_충남서산B', './충청남도_충남서산B.geojson')">
+            충청남도_충남서산B
+        </label>
+        <label>
+            <input type="checkbox" id="충청남도_충남공주A" onchange="toggleData('충청남도_충남공주A', './충청남도_충남공주A.geojson')">
+            충청남도_충남공주A
+        </label>
+        <label>
+            <input type="checkbox" id="충청남도_충남논산A" onchange="toggleData('충청남도_충남논산A', './충청남도_충남논산A.geojson')">
+            충청남도_충남논산A
+        </label>
+        <label>
+            <input type="checkbox" id="충청남도_충남홍성A" onchange="toggleData('충청남도_충남홍성A', './충청남도_충남홍성A.geojson')">
+            충청남도_충남홍성A
+        </label>
+        <label>
+            <input type="checkbox" id="충청남도_충남보령A" onchange="toggleData('충청남도_충남보령A', './충청남도_충남보령A.geojson')">
+            충청남도_충남보령A
+        </label>
 
         <div class="group">
             <h3>대전광역시</h3>
@@ -786,6 +849,95 @@
         </label>
 
         <div class="group">
+            <h3>충청북도</h3>
+        <label>
+            <input type="checkbox" id="충청북도_충북제천A" onchange="toggleData('충청북도_충북제천A', './충청북도_충북제천A.geojson')">
+            충청북도_충북제천A
+        </label>
+        <label>
+            <input type="checkbox" id="충청북도_충북청주상당A" onchange="toggleData('충청북도_충북청주상당A', './충청북도_충북청주상당A.geojson')">
+            충청북도_충북청주상당A
+        </label>
+        <label>
+            <input type="checkbox" id="충청북도_충북청주서원A" onchange="toggleData('충청북도_충북청주서원A', './충청북도_충북청주서원A.geojson')">
+            충청북도_충북청주서원A
+        </label>
+        <label>
+            <input type="checkbox" id="충청북도_충북청주흥덕A" onchange="toggleData('충청북도_충북청주흥덕A', './충청북도_충북청주흥덕A.geojson')">
+            충청북도_충북청주흥덕A
+        </label>
+        <label>
+            <input type="checkbox" id="충청북도_충북청주청원A" onchange="toggleData('충청북도_충북청주청원A', './충청북도_충북청주청원A.geojson')">
+            충청북도_충북청주청원A
+        </label>
+        <label>
+            <input type="checkbox" id="충청북도_충북충주A" onchange="toggleData('충청북도_충북충주A', './충청북도_충북충주A.geojson')">
+            충청북도_충북충주A
+        </label>
+
+        <div class="group">
+            <h3>전라북도</h3>
+        <label>
+            <input type="checkbox" id="전라북도_전북군산A" onchange="toggleData('전라북도_전북군산A', './전라북도_전북군산A.geojson')">
+            전라북도_전북군산A
+        </label>
+        <label>
+            <input type="checkbox" id="전라북도_전북익산A" onchange="toggleData('전라북도_전북익산A', './전라북도_전북익산A.geojson')">
+            전라북도_전북익산A
+        </label>
+        <label>
+            <input type="checkbox" id="전라북도_전북전주덕진A" onchange="toggleData('전라북도_전북전주덕진A', './전라북도_전북전주덕진A.geojson')">
+            전라북도_전북전주덕진A
+        </label>
+        <label>
+            <input type="checkbox" id="전라북도_전북전주덕진B" onchange="toggleData('전라북도_전북전주덕진B', './전라북도_전북전주덕진B.geojson')">
+            전라북도_전북전주덕진B
+        </label>
+        <label>
+            <input type="checkbox" id="전라북도_전북전주완산A" onchange="toggleData('전라북도_전북전주완산A', './전라북도_전북전주완산A.geojson')">
+            전라북도_전북전주완산A
+        </label>
+
+        <div class="group">
+            <h3>전라남도</h3>
+        <label>
+            <input type="checkbox" id="전라남도_전남광양A" onchange="toggleData('전라남도_전남광양A', './전라남도_전남광양A.geojson')">
+            전라남도_전남광양A
+        </label>
+        <label>
+            <input type="checkbox" id="전라남도_전남광양B" onchange="toggleData('전라남도_전남광양B', './전라남도_전남광양B.geojson')">
+            전라남도_전남광양B
+        </label>
+        <label>
+            <input type="checkbox" id="전라남도_전남순천A" onchange="toggleData('전라남도_전남순천A', './전라남도_전남순천A.geojson')">
+            전라남도_전남순천A
+        </label>
+        <label>
+            <input type="checkbox" id="전라남도_전남나주A" onchange="toggleData('전라남도_전남나주A', './전라남도_전남나주A.geojson')">
+            전라남도_전남나주A
+        </label>
+        <label>
+            <input type="checkbox" id="전라남도_전남목포A" onchange="toggleData('전라남도_전남목포A', './전라남도_전남목포A.geojson')">
+            전라남도_전남목포A
+        </label>
+        <label>
+            <input type="checkbox" id="전라남도_전남무안A" onchange="toggleData('전라남도_전남무안A', './전라남도_전남무안A.geojson')">
+            전라남도_전남무안A
+        </label>
+        <label>
+            <input type="checkbox" id="전라남도_전남여수A" onchange="toggleData('전라남도_전남여수A', './전라남도_전남여수A.geojson')">
+            전라남도_전남여수A
+        </label>
+        <label>
+            <input type="checkbox" id="전라남도_전남여수B" onchange="toggleData('전라남도_전남여수B', './전라남도_전남여수B.geojson')">
+            전라남도_전남여수B
+        </label>
+        <label>
+            <input type="checkbox" id="전라남도_전남여수C" onchange="toggleData('전라남도_전남여수C', './전라남도_전남여수C.geojson')">
+            전라남도_전남여수C
+        </label>
+
+        <div class="group">
             <h3>광주광역시</h3>
         <label>
             <input type="checkbox" id="광주광역시_광주광산A" onchange="toggleData('광주광역시_광주광산A', './광주광역시_광주광산A.geojson')">
@@ -811,6 +963,50 @@
             <input type="checkbox" id="광주광역시_광주서A" onchange="toggleData('광주광역시_광주서A', './광주광역시_광주서A.geojson')">
             광주광역시_광주서A
         </label>
+
+        <div class="group">
+            <h3>경상북도</h3>
+        <label>
+            <input type="checkbox" id="경상북도_경북경산A" onchange="toggleData('경상북도_경북경산A', './경상북도_경북경산A.geojson')">
+            경상북도_경북경산A
+        </label>
+        <label>
+            <input type="checkbox" id="경상북도_경북경산B" onchange="toggleData('경상북도_경북경산B', './경상북도_경북경산B.geojson')">
+            경상북도_경북경산B
+        </label>
+        <label>
+            <input type="checkbox" id="경상북도_경북경주A" onchange="toggleData('경상북도_경북경주A', './경상북도_경북경주A.geojson')">
+            경상북도_경북경주A
+        </label>
+        <label>
+            <input type="checkbox" id="경상북도_경북구미A" onchange="toggleData('경상북도_경북구미A', './경상북도_경북구미A.geojson')">
+            경상북도_경북구미A
+        </label>
+        <label>
+            <input type="checkbox" id="경상북도_경북구미B" onchange="toggleData('경상북도_경북구미B', './경상북도_경북구미B.geojson')">
+            경상북도_경북구미B
+        </label>
+        <label>
+            <input type="checkbox" id="경상북도_경북안동A" onchange="toggleData('경상북도_경북안동A', './경상북도_경북안동A.geojson')">
+            경상북도_경북안동A
+        </label>
+        <label>
+            <input type="checkbox" id="경상북도_경북포항남A" onchange="toggleData('경상북도_경북포항남A', './경상북도_경북포항남A.geojson')">
+            경상북도_경북포항남A
+        </label>
+        <label>
+            <input type="checkbox" id="경상북도_경북포항남B" onchange="toggleData('경상북도_경북포항남B', './경상북도_경북포항남B.geojson')">
+            경상북도_경북포항남B
+        </label>
+        <label>
+            <input type="checkbox" id="경상북도_경북포항북A" onchange="toggleData('경상북도_경북포항북A', './경상북도_경북포항북A.geojson')">
+            경상북도_경북포항북A
+        </label>
+        <label>
+            <input type="checkbox" id="경상북도_경북김천A" onchange="toggleData('경상북도_경북김천A', './경상북도_경북김천A.geojson')">
+            경상북도_경북김천A
+        </label>
+
 
         <div class="group">
             <h3>대구광역시</h3>
@@ -904,6 +1100,34 @@
             <input type="checkbox" id="경상남도_경남창원진해B" onchange="toggleData('경상남도_경남창원진해B', './경상남도_경남창원진해B.geojson')">
             경상남도_경남창원진해B
         </label>
+        <label>
+            <input type="checkbox" id="경상남도_경남거제A" onchange="toggleData('경상남도_경남거제A', './경상남도_경남거제A.geojson')">
+            경상남도_경남거제A
+        </label>
+        <label>
+            <input type="checkbox" id="경상남도_경남김해A" onchange="toggleData('경상남도_경남김해A', './경상남도_경남김해A.geojson')">
+            경상남도_경남김해A
+        </label>
+        <label>
+            <input type="checkbox" id="경상남도_경남김해B" onchange="toggleData('경상남도_경남김해B', './경상남도_경남김해B.geojson')">
+            경상남도_경남김해B
+        </label>
+        <label>
+            <input type="checkbox" id="경상남도_경남양산A" onchange="toggleData('경상남도_경남양산A', './경상남도_경남양산A.geojson')">
+            경상남도_경남양산A
+        </label>
+        <label>
+            <input type="checkbox" id="경상남도_경남양산B" onchange="toggleData('경상남도_경남양산B', './경상남도_경남양산B.geojson')">
+            경상남도_경남양산B
+        </label>
+        <label>
+            <input type="checkbox" id="경상남도_경남진주A" onchange="toggleData('경상남도_경남진주A', './경상남도_경남진주A.geojson')">
+            경상남도_경남진주A
+        </label>
+        <label>
+            <input type="checkbox" id="경상남도_경남통영A" onchange="toggleData('경상남도_경남통영A', './경상남도_경남통영A.geojson')">
+            경상남도_경남통영A
+        </label>
 
         <div class="group">
             <h3>부산광역시</h3>
@@ -959,6 +1183,22 @@
             <input type="checkbox" id="부산광역시_부산해운대A" onchange="toggleData('부산광역시_부산해운대A', './부산광역시_부산해운대A.geojson')">
             부산광역시_부산해운대A
         </label>
+
+        <div class="group">
+            <h3>제주도</h3>
+        <label>
+            <input type="checkbox" id="제주도_제주제주A" onchange="toggleData('제주도_제주제주A', './제주도_제주제주A.geojson')">
+            제주도_제주제주A
+        </label>
+        <label>
+            <input type="checkbox" id="제주도_제주제주B" onchange="toggleData('제주도_제주제주B', './제주도_제주제주B.geojson')">
+            제주도_제주제주B
+        </label>
+        <label>
+            <input type="checkbox" id="제주도_제주서귀포A" onchange="toggleData('제주도_제주서귀포A', './제주도_제주서귀포A.geojson')">
+            제주도_제주서귀포A
+        </label>
+
 
         </div>
     </div>
@@ -1119,7 +1359,7 @@
 
 // NEW 태그 추가
 function addNewTags() {
-    const newItems = ['충청남도_충남아산A','충청남도_충남아산B','충청남도_충남천안동남A','충청남도_충남천안동남B','충청남도_충남천안서북A','대전광역시_대전대덕A','대전광역시_대전동A','대전광역시_대전서A','대전광역시_대전서B','대전광역시_대전유성A','대전광역시_대전유성B','대전광역시_대전유성C','대전광역시_대전중A','광주광역시_광주광산A','광주광역시_광주남A','광주광역시_광주동A','광주광역시_광주북A','광주광역시_광주북B','광주광역시_광주서A','대구광역시_대구달서A','대구광역시_대구달서B','대구광역시_대구달성A','대구광역시_대구동A','대구광역시_대구북A','대구광역시_대구수성A','대구광역시_대구수성B','대구광역시_대구수성C','대구광역시_대구중A','울산광역시_울산남A','울산광역시_울산동A','울산광역시_울산북A','울산광역시_울산북B','울산광역시_울산울주A','울산광역시_울산중A','경상남도_경남창원마산합포','경상남도_경남창원마산회원','경상남도_경남창원성산','경상남도_경남창원의창','경상남도_경남창원진해A','경상남도_경남창원진해B','부산광역시_부산강서A','부산광역시_부산금정A','부산광역시_부산기장A','부산광역시_부산남A','부산광역시_부산동래A','부산광역시_부산부산진A','부산광역시_부산북A','부산광역시_부산사상A','부산광역시_부산사하A','부산광역시_부산수영A','부산광역시_부산영도A','부산광역시_부산중A','부산광역시_부산해운대A']; // NEW 표시를 추가할 체크박스 ID 리스트
+    const newItems = ['경기도 이천시_경기이천A','충청남도_충남당진A','충청남도_충남당진B','충청남도_충남서산A','충청남도_충남서산B','충청남도_충남공주A','충청남도_충남논산A','충청남도_충남홍성A','충청남도_충남보령A','충청북도_충북제천A','충청북도_충북청주상당A','충청북도_충북청주서원A','충청북도_충북청주흥덕A','충청북도_충북청주청원A','충청북도_충북충주A','제주도_제주제주A','제주도_제주제주B','제주도_제주서귀포A','전라북도_전북군산A','전라북도_전북익산A','전라북도_전북전주덕진A','전라북도_전북전주덕진B','전라북도_전북전주완산A','전라남도_전남광양A','전라남도_전남광양B','전라남도_전남순천A','전라남도_전남나주A','전라남도_전남목포A','전라남도_전남무안A','전라남도_전남여수A','전라남도_전남여수B','전라남도_전남여수C','경상북도_경북경산A','경상북도_경북경산B','경상북도_경북경주A','경상북도_경북구미A','경상북도_경북구미B','경상북도_경북안동A','경상북도_경북포항남A','경상북도_경북포항남B','경상북도_경북포항북A','경상북도_경북김천A','경상남도_경남거제A','경상남도_경남김해A','경상남도_경남김해B','경상남도_경남양산A','경상남도_경남양산B','경상남도_경남진주A','경상남도_경남통영A','강원도_강원춘천A','강원도_강원원주A','강원도_강원원주B','강원도_강원속초A','강원도_강원강릉A','강원도_강원동해A']; // NEW 표시를 추가할 체크박스 ID 리스트
     newItems.forEach(id => {
         const checkbox = document.getElementById(id);
         if (checkbox) {
