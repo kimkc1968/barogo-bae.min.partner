@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BAROGO BAE.MIN ConnectBiz Map</title>
     <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=ffb46c6e52f67ba3c00997e78bc3590a"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretendard/dist/web/static/pretendard.css">
+    <!-- 아이콘 CDN (샘플 아이콘) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         html, body {
             margin: 0;
@@ -12,6 +15,11 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
+        }
+        body {
+            font-family: 'Pretendard Light', sans-serif;
+            background: #f8f8f8;
+            margin: 0; padding: 0;
         }
         #map {
             width: 100%;
@@ -126,18 +134,6 @@
             justify-content: space-between;
             align-items: center;
         }
-        #announcement .close-btn {
-            background: #333;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        #announcement .close-btn:hover {
-            background: #555;
-        }
         #toggleButton {
             position: fixed;
             top: 50%;
@@ -176,14 +172,133 @@
             margin-right: 5px;
             vertical-align: middle;
         }
+        /* 팝업 배경 스타일 */
+        .popup-overlay {
+            position: fixed;
+            top:0; left:0;
+            width:100%; height:100%;
+            background: rgba(0,0,0,0.4);
+            display:flex; align-items:center; justify-content:center;
+            z-index:999;
+        }
+
+        .popup {
+            width: 340px;
+            background:#fff;
+            border-radius:10px 10px 0 0;
+            box-shadow:0 4px 12px rgba(0,0,0,0.2);
+            position:relative;
+            text-align:center;
+            overflow:hidden;
+        }
+
+        .popup-title {
+            font-weight:700;
+            padding:20px;
+            font-size:19px;
+            border-bottom:1px solid #eee;
+            color:#222;
+        }
+
+        .popup-content {
+            padding:20px;
+            font-size:16px;
+            color:#555;
+        }
+
+        .popup-item {
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            text-align: left; /* 텍스트 왼쪽 정렬 */
+            margin-bottom:15px;
+        }
+
+        .popup-item i {
+            font-size:24px;
+            color:#007BFF;
+            margin-right:10px;
+        }
+
+        .popup-item:last-child {
+            margin-bottom:0;
+        }
+
+        .popup-footer {
+            display:flex;
+            border-top:1px solid #eee;
+            background:#007BFF;
+        }
+
+        .popup-footer button {
+            flex:1;
+            background:transparent;
+            border:none;
+            color:#fff;
+            font-size:14px;
+            padding:15px;
+            cursor:pointer;
+        }
+
+        .popup-footer button:hover {
+            background:rgba(255,255,255,0.1);
+        }
+
+        .checkbox-area {
+            display:flex;
+            align-items:center;
+            padding-left:15px;
+            font-size:13px;
+            color:#fff;
+            cursor:pointer;
+        }
+
+        .checkbox-area input[type="checkbox"] {
+            appearance:none;
+            width:16px; height:16px;
+            border:1px solid #fff;
+            border-radius:50%;
+            margin-right:8px;
+            position:relative;
+        }
+
+        .checkbox-area input[type="checkbox"]:checked::before {
+            content:"✔";
+            position:absolute;
+            top:-1px; left:3px;
+            color:#fff;
+            font-size:13px;
+        }
     </style>
 </head>
 <body>
-    <div id="announcement">
-        <div>
-            📢 업데이트 사항_일부지역 권역변경_Update. 25.03.31(월) / 문의사항 : 김기찬 팀장
+    <div class="popup-overlay" id="popup">
+        <div class="popup">
+            <div class="popup-title">공지사항</div>
+            <div class="popup-content">
+                <div class="popup-item">
+                    <i class="fa-solid fa-mobile-screen-button"></i>
+                    <div>권역이 변경된 지역은 <br><strong>"변경"으로 표시됩니다.</strong></div>
+                </div>
+                <hr style="border:none; border-top:1px dashed #eee; margin:15px 0;">
+                <div class="popup-item">
+                    <i class="fa-solid fa-bell"></i>
+                    <div>세종시 및 울산 일부지역 <br><strong>권역이 변경되었습니다.</strong></div>
+                </div>
+                <hr style="border:none; border-top:1px dashed #eee; margin:15px 0;">
+                <div class="popup-item">
+                    <div><strong>문의 : 김기찬 팀장</strong></div>
+                </div>
+            </div>
+    
+            <div class="popup-footer">
+                <label class="checkbox-area">
+                    <input type="checkbox" id="hidePopupOneDay">
+                    1일 동안 보지 않음
+                </label>
+                <button onclick="closePopup()">닫기</button>
+            </div>
         </div>
-        <button class="close-btn" onclick="closeAnnouncement()">닫기</button>
     </div>
 
     <div id="map"></div>
@@ -1401,11 +1516,39 @@ function addChangedTags() {
     });
 }
 
-        // 공지사항 닫기 버튼 기능
-        function closeAnnouncement() {
-            const announcement = document.getElementById('announcement');
-            announcement.style.display = 'none';
+    // 쿠키 설정 함수 (1일 동안 유지)
+    function setCookie(name, value, days) {
+        const d = new Date();
+        d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = name + "=" + value + "; expires=" + d.toUTCString() + "; path=/";
+    }
+
+    // 쿠키 값 가져오는 함수
+    function getCookie(name) {
+        const cname = name + "=";
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const ca = decodedCookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
+            let c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1);
+            if (c.indexOf(cname) == 0) return c.substring(cname.length, c.length);
         }
+        return "";
+    }
+
+    function closePopup(){
+        const hidePopup = document.getElementById('hidePopupOneDay').checked;
+        if(hidePopup){
+            setCookie('hidePopupOneDay','true',1); // 1일 쿠키 저장
+        }
+        document.getElementById('popup').style.display='none';
+    }
+
+    document.addEventListener('DOMContentLoaded',()=>{
+        if(getCookie('hidePopupOneDay')==='true'){
+            document.getElementById('popup').style.display='none';
+        }
+    });
 
         document.getElementById('toggleButton').addEventListener('click', function() {
             var controls = document.getElementById('controls');
@@ -1420,4 +1563,3 @@ function addChangedTags() {
     </script>
 </body>
 </html>
-
