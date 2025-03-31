@@ -165,7 +165,7 @@
             margin-right: 5px;
             vertical-align: middle;
         }
-        .new-tag1 {
+        .Change-tag {
             display: inline-block;
             background-color: #007BFF; /* 붉은 배경 */
             color: white; /* 흰색 텍스트 */
@@ -1367,7 +1367,7 @@
             document.getElementById('searchResultCount').textContent = `검색 결과: ${count}개`;
         }
 
-// NEW 태그 추가
+// 신규 태그 추가
 function addNewTags() {
     const newItems = ['경기도 이천시_경기이천A','충청남도_충남당진A','충청남도_충남당진B','충청남도_충남서산A','충청남도_충남서산B','충청남도_충남공주A','충청남도_충남논산A','충청남도_충남홍성A','충청남도_충남보령A','충청북도_충북제천A','충청북도_충북청주상당A','충청북도_충북청주서원A','충청북도_충북청주흥덕A','충청북도_충북청주청원A','충청북도_충북충주A','제주도_제주제주A','제주도_제주제주B','제주도_제주서귀포A','전라북도_전북군산A','전라북도_전북익산A','전라북도_전북전주덕진A','전라북도_전북전주덕진B','전라북도_전북전주완산A','전라남도_전남광양A','전라남도_전남광양B','전라남도_전남순천A','전라남도_전남나주A','전라남도_전남목포A','전라남도_전남무안A','전라남도_전남여수A','전라남도_전남여수B','전라남도_전남여수C','경상북도_경북경산A','경상북도_경북경산B','경상북도_경북경주A','경상북도_경북구미A','경상북도_경북구미B','경상북도_경북안동A','경상북도_경북포항남A','경상북도_경북포항남B','경상북도_경북포항북A','경상북도_경북김천A','경상남도_경남거제A','경상남도_경남김해A','경상남도_경남김해B','경상남도_경남양산A','경상남도_경남양산B','경상남도_경남진주A','경상남도_경남통영A','강원도_강원춘천A','강원도_강원원주A','강원도_강원원주B','강원도_강원속초A','강원도_강원강릉A','강원도_강원동해A']; // NEW 표시를 추가할 체크박스 ID 리스트
     newItems.forEach(id => {
@@ -1378,24 +1378,24 @@ function addNewTags() {
                 const newTag = document.createElement('span');
                 newTag.className = 'new-tag';
                 newTag.innerText = '신규';
-                checkbox.insertAdjacentElement('afterend', newTag); // 체크박스 뒤에 NEW 추가
+                checkbox.insertAdjacentElement('afterend', newTag); // 체크박스 뒤에 신규 추가
             }
         }
     });
 }
 
-// NEW 태그 추가
-function addNewTags() {
-    const newItems = ['울산광역시_울산울주A','세종특별자치시_세종B권역','세종특별자치시_세종C권역']; // NEW 표시를 추가할 체크박스 ID 리스트
+// 변경 태그 추가 
+function addChangedTags() {
+    const newItems = ['울산광역시_울산울주A','세종특별자치시_세종B권역','세종특별자치시_세종C권역'];
     newItems.forEach(id => {
         const checkbox = document.getElementById(id);
         if (checkbox) {
             const label = checkbox.parentElement;
-            if (!label.querySelector('.new-tag1')) { // 중복 방지
+            if (!label.querySelector('.Change-tag')) {
                 const newTag = document.createElement('span');
-                newTag.className = 'new-tag1';
+                newTag.className = 'Change-tag';
                 newTag.innerText = '변경';
-                checkbox.insertAdjacentElement('afterend', newTag); // 체크박스 뒤에 NEW 추가
+                checkbox.insertAdjacentElement('afterend', newTag);
             }
         }
     });
@@ -1415,7 +1415,9 @@ function addNewTags() {
         // 페이지 로드 후 NEW 태그 추가
         document.addEventListener('DOMContentLoaded', function () {
             addNewTags();
+            addChangedTags();
         });
     </script>
 </body>
 </html>
+
